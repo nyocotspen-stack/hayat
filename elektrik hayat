@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#142d43">
+<title>Elektrik Hayat | Job Management</title>
+<style>
+:root{--navy:#142d43;--navy2:#203f59;--gold:#d5ad55;--bg:#f3f5f8;--ink:#17212b;--muted:#687786;--line:#e1e6eb;--white:#fff;--green:#168653;--red:#c43d3d;--blue:#2463a5;--amber:#b7791f}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+header{background:linear-gradient(120deg,var(--navy),var(--navy2));color:white;padding:18px max(16px,calc((100% - 1180px)/2));display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px}.logo{width:45px;height:45px;border:2px solid var(--gold);border-radius:12px;display:grid;place-items:center;color:var(--gold);font-weight:900;font-size:22px}.brand h1{font-size:18px;margin:0;letter-spacing:.3px}.brand p{margin:3px 0 0;color:#d4e0e8;font-size:12px}
+header .actions{display:flex;gap:8px;flex-wrap:wrap}
+button,.btn{border:0;border-radius:9px;padding:10px 13px;font-weight:650;cursor:pointer;background:var(--navy);color:white}
+button.secondary{background:#e9eef3;color:var(--navy)}button.gold{background:var(--gold);color:#17212b}button.danger{background:#fff0f0;color:var(--red)}button:disabled{opacity:.45;cursor:not-allowed}
+main{max-width:1180px;margin:22px auto;padding:0 16px 40px}
+.notice{background:#fff8e8;border:1px solid #efdcae;padding:12px 14px;border-radius:10px;color:#70551a;font-size:13px;margin-bottom:16px}
+.tabs{display:flex;gap:7px;overflow:auto;padding:3px 0 13px}.tab{white-space:nowrap;background:#e7edf2;color:#30485d}.tab.active{background:var(--navy);color:white}
+.cards{display:grid;grid-template-columns:repeat(5,minmax(130px,1fr));gap:12px;margin:8px 0 18px}
+.card{background:white;border:1px solid var(--line);border-radius:13px;padding:15px;box-shadow:0 2px 7px #132c4210}.card .k{font-size:12px;color:var(--muted)}.card .v{font-size:25px;font-weight:800;margin-top:5px}.card .sub{font-size:11px;color:var(--muted);margin-top:2px}
+.panel{background:white;border:1px solid var(--line);border-radius:13px;padding:16px;margin:12px 0;box-shadow:0 2px 7px #132c4208}
+.panel h2{font-size:17px;margin:0 0 13px}.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.row>*{flex:1}
+.filters input,.filters select{min-width:150px}
+input,select,textarea{width:100%;border:1px solid #ccd5dd;border-radius:8px;padding:10px 11px;font:inherit;background:white;color:var(--ink)}
+label{display:block;font-size:12px;font-weight:700;color:#536474;margin:0 0 5px}.field{margin-bottom:12px}textarea{min-height:75px;resize:vertical}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 12px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 12px}
+table{border-collapse:collapse;width:100%;min-width:800px}th,td{text-align:left;padding:11px 9px;border-bottom:1px solid var(--line);font-size:13px;vertical-align:top}th{background:#f7f9fb;color:#566575;font-size:11px;text-transform:uppercase;letter-spacing:.4px}
+.tablewrap{overflow:auto}.pill{display:inline-block;border-radius:30px;padding:4px 8px;font-size:11px;font-weight:750;background:#edf1f5;color:#425466}.s-new{background:#edf1f5}.s-wait{background:#fff3d9;color:#8a5b00}.s-doing{background:#e7f0ff;color:#1c5798}.s-done{background:#e2f5e9;color:#126b3d}.s-paid{background:#dcf4ec;color:#08734d}.s-unpaid{background:#ffebeb;color:#a32e2e}
+.small{font-size:12px;color:var(--muted)}.right{text-align:right}.hidden{display:none!important}.actions-cell{white-space:nowrap}.actions-cell button{padding:6px 8px;font-size:12px;margin:2px}
+.empty{text-align:center;padding:28px;color:var(--muted)}
+.modal{position:fixed;inset:0;background:#07182799;display:none;align-items:flex-start;justify-content:center;padding:18px;overflow:auto;z-index:5}.modal.open{display:flex}.modalbox{background:white;border-radius:15px;width:min(780px,100%);padding:18px;margin:auto}.modalhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}.modalhead h2{margin:0;font-size:19px}
+.sig{border:1px dashed #9baab7;border-radius:8px;background:#fbfcfd;width:100%;height:130px;touch-action:none}
+footer{text-align:center;color:#8995a1;font-size:11px;padding:20px}
+@media(max-width:850px){.cards{grid-template-columns:repeat(2,1fr)}.cards .card:last-child{grid-column:span 2}.grid3{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){header{padding:14px}.brand h1{font-size:16px}.cards{gap:8px}.card{padding:12px}.card .v{font-size:21px}.grid2,.grid3{grid-template-columns:1fr}.panel{padding:12px}main{margin-top:13px}.tabs{margin-right:-16px}}
+body.worker .admin-only{display:none!important}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script><script src="config.js"></script>
+</head>
+<body>
+<div id="login" class="modal open"><div class="modalbox" style="max-width:380px"><h2>Log masuk</h2><p class="small">Elektrik Hayat Job Management</p><div class="field"><label>Emel</label><input id="email" type="email" autocomplete="username"></div><div class="field"><label>Kata laluan</label><input id="pass" type="password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></div><button onclick="doLogin()" style="width:100%">Log masuk</button><p id="loginErr" class="small" style="color:#c43d3d"></p></div></div>
+<header>
+ <div class="brand"><div class="logo">EH</div><div><h1>ELEKTRIK HAYAT SDN BHD</h1><p>JOB MANAGEMENT SYSTEM · Versi 3.0</p></div></div>
+ <div class="actions"><button class="gold admin-only" onclick="openJob()">＋ Daftar Order</button><button class="secondary admin-only" onclick="exportData()">Backup Data</button><button class="secondary" onclick="logout()">Log keluar</button></div>
+</header>
+<main>
+ <div class="notice" id="who"></div>
+ <nav class="tabs">
+  <button class="tab active" data-tab="dashboard">Dashboard</button>
+  <button class="tab" data-tab="jobs">Senarai Kerja</button>
+  <button class="tab admin-only" data-tab="payments">Bayaran</button>
+  <button class="tab admin-only" data-tab="workers">Pekerja</button>
+  <button class="tab admin-only" data-tab="reports">Laporan</button>
+ </nav>
+ <section id="dashboard">
+  <div class="cards">
+   <div class="card"><div class="k">Jumlah order</div><div class="v" id="dTotal">0</div><div class="sub">Semua rekod</div></div>
+   <div class="card"><div class="k">Order baru / menunggu</div><div class="v" id="dNew">0</div><div class="sub">Belum dimulakan</div></div>
+   <div class="card"><div class="k">Sedang dilakukan</div><div class="v" id="dDoing">0</div><div class="sub">Dalam tindakan</div></div>
+   <div class="card"><div class="k">Kerja siap</div><div class="v" id="dDone">0</div><div class="sub">Telah diselesaikan</div></div>
+   <div class="card"><div class="k">Belum selesai bayar</div><div class="v" id="dDue">RM0.00</div><div class="sub">Baki pelanggan</div></div>
+  </div>
+  <div class="panel"><div class="row"><h2>Kerja terkini</h2><button class="secondary" style="flex:0 0 auto" onclick="showTab('jobs')">Lihat semua</button></div><div id="recent"></div></div>
+  <div class="panel admin-only"><h2>Ringkasan kutipan</h2><div class="grid3"><div><div class="small">Jumlah nilai kerja</div><h2 id="sumAmount">RM0.00</h2></div><div><div class="small">Jumlah diterima</div><h2 id="sumPaid">RM0.00</h2></div><div><div class="small">Baki belum bayar</div><h2 id="sumBalance">RM0.00</h2></div></div></div>
+ </section>
+ <section id="jobs" class="hidden">
+  <div class="panel"><div class="row"><h2>Senarai kerja / order</h2><button class="admin-only" onclick="openJob()" style="flex:0 0 auto">＋ Order baru</button></div>
+   <div class="row filters"><input id="searchJob" placeholder="Cari pelanggan / lokasi / no. order" oninput="renderJobs()"><select id="filterStatus" onchange="renderJobs()"><option value="">Semua status kerja</option><option>Order baru</option><option>Menunggu tindakan</option><option>Sedang dilakukan</option><option>Kerja siap</option></select><select id="filterPay" onchange="renderJobs()"><option value="">Semua status bayaran</option><option>Belum bayar</option><option>Deposit</option><option>Bayaran separuh</option><option>Sudah bayar</option></select></div>
+   <div id="jobsTable" class="tablewrap" style="margin-top:12px"></div>
+  </div>
+ </section>
+ <section id="payments" class="hidden">
+  <div class="panel"><h2>Rekod bayaran pelanggan</h2><div class="cards" style="grid-template-columns:repeat(3,1fr)"><div class="card"><div class="k">Nilai kerja</div><div class="v" id="pAmount">RM0</div></div><div class="card"><div class="k">Diterima</div><div class="v" id="pPaid">RM0</div></div><div class="card"><div class="k">Baki</div><div class="v" id="pDue">RM0</div></div></div><div id="paymentTable" class="tablewrap"></div></div>
+ </section>
+ <section id="workers" class="hidden">
+  <div class="panel"><div class="row"><h2>Senarai pekerja</h2></div><p class="small">Tambah pekerja baru di Supabase → Authentication → Users. Mereka muncul di sini secara automatik.</p><div id="workerList" class="grid3"></div></div>
+ </section>
+ <section id="reports" class="hidden">
+  <div class="panel"><h2>Laporan ringkas</h2><div class="grid3"><div class="field"><label>Dari tarikh</label><input type="date" id="dateFrom" onchange="renderReports()"></div><div class="field"><label>Hingga tarikh</label><input type="date" id="dateTo" onchange="renderReports()"></div><div class="field" style="align-self:end"><button class="secondary" onclick="clearDates()">Reset tarikh</button></div></div><div id="reportSummary"></div><button onclick="exportCSV()">Muat turun CSV</button></div>
+ </section>
+</main>
+<footer>Elektrik Hayat Sdn Bhd · Job Management System</footer>
+
+<div class="modal" id="jobModal"><div class="modalbox">
+ <div class="modalhead"><h2 id="modalTitle">Daftar order baru</h2><button class="secondary" onclick="closeJob()">Tutup ✕</button></div>
+ <form id="jobForm" onsubmit="saveJob(event)">
+  <input type="hidden" id="jobId">
+  <div class="grid2">
+   <div class="field"><label>Nama pelanggan *</label><input id="customer" required placeholder="Nama pelanggan"></div>
+   <div class="field"><label>No. telefon</label><input id="phone" placeholder="Contoh: 01X-XXXXXXX"></div>
+   <div class="field"><label>Tarikh order *</label><input id="date" type="date" required></div>
+   <div class="field"><label>Jenis kerja *</label><select id="type" required><option value="">Pilih jenis kerja</option><option>Wiring / Elektrik</option><option>Aircond</option><option>Autogate</option><option>CCTV</option><option>Meter board / TNB</option><option>Servis / Pembaikan</option><option>Lain-lain</option></select></div>
+   <div class="field"><label>Lokasi kerja *</label><input id="location" required placeholder="Alamat / kawasan"></div>
+   <div class="field"><label>Pekerja bertanggungjawab</label><select id="worker"></select></div>
+   <div class="field"><label>Status kerja</label><select id="status"><option>Order baru</option><option>Menunggu tindakan</option><option>Sedang dilakukan</option><option>Kerja siap</option></select></div>
+   <div class="field"><label>Tarikh siap (jika ada)</label><input id="finishDate" type="date"></div>
+   <div class="field"><label>Jumlah harga kerja (RM)</label><input id="amount" type="number" min="0" step="0.01" value="0"></div>
+   <div class="field"><label>Bayaran diterima (RM)</label><input id="paid" type="number" min="0" step="0.01" value="0"></div>
+  </div>
+  <div class="field"><label>Butiran kerja / masalah pelanggan</label><textarea id="description" placeholder="Catat skop kerja dan aduan pelanggan"></textarea></div>
+  <div class="field"><label>Bahan digunakan</label><textarea id="materials" placeholder="Contoh: kabel 2.5mm - 20m, MCB 20A - 1 unit"></textarea></div>
+  <div class="field"><label>Catatan / tindakan susulan</label><textarea id="followup" placeholder="Catatan lawatan susulan atau perkara belum selesai"></textarea></div>
+  <div class="grid2">
+   <div class="field"><label>Gambar sebelum kerja (pilihan)</label><input type="file" id="beforePhoto" accept="image/*"></div>
+   <div class="field"><label>Gambar selepas kerja (pilihan)</label><input type="file" id="afterPhoto" accept="image/*"></div>
+  </div>
+  <div class="field"><label>Tandatangan pelanggan (pilihan)</label><canvas class="sig" id="signature"></canvas><button type="button" class="secondary" onclick="clearSignature()" style="margin-top:6px">Padam tandatangan</button></div>
+  <div class="row"><button type="submit">Simpan rekod kerja</button><button type="button" class="secondary" onclick="closeJob()">Batal</button></div>
+ </form>
+</div></div>
+
+<script>
+const $=id=>document.getElementById(id);
+let jobs=[],workers=[],me=null;
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const wname=id=>workers.find(w=>w.id===id)?.name||'Belum diagihkan';
+let beforeData='',afterData='',signatureData='';
+const money=n=>'RM'+Number(n||0).toLocaleString('en-MY',{minimumFractionDigits:2,maximumFractionDigits:2});
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const balance=j=>Math.max(0,Number(j.amount||0)-Number(j.paid||0));
+function payStatus(j){let p=Number(j.paid||0),a=Number(j.amount||0);return p<=0?'Belum bayar':p>=a?'Sudah bayar':p<a/2?'Deposit':'Bayaran separuh'}
+function statusClass(s){return {'Order baru':'s-new','Menunggu tindakan':'s-wait','Sedang dilakukan':'s-doing','Kerja siap':'s-done','Belum bayar':'s-unpaid','Deposit':'s-wait','Bayaran separuh':'s-wait','Sudah bayar':'s-paid'}[s]||'s-new'}
+function showTab(t){document.querySelectorAll('main>section').forEach(x=>x.classList.add('hidden'));document.getElementById(t).classList.remove('hidden');document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));renderAll()}
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
+function workerOptions(sel=''){return '<option value="">Belum diagihkan</option>'+workers.filter(w=>w.role==='worker').map(w=>`<option value="${w.id}" ${w.id===sel?'selected':''}>${esc(w.name)}</option>`).join('')}
+function renderAll(){renderDashboard();renderJobs();renderPayments();renderWorkers();renderReports()}
+function renderDashboard(){
+ let total=jobs.length,neu=jobs.filter(j=>['Order baru','Menunggu tindakan'].includes(j.status)).length,doing=jobs.filter(j=>j.status==='Sedang dilakukan').length,done=jobs.filter(j=>j.status==='Kerja siap').length;
+ let amount=jobs.reduce((s,j)=>s+Number(j.amount||0),0),paid=jobs.reduce((s,j)=>s+Number(j.paid||0),0),due=jobs.reduce((s,j)=>s+balance(j),0);
+ dTotal.textContent=total;dNew.textContent=neu;dDoing.textContent=doing;dDone.textContent=done;dDue.textContent=money(due);
+ sumAmount.textContent=money(amount);sumPaid.textContent=money(paid);sumBalance.textContent=money(due);
+ let latest=[...jobs].sort((a,b)=>(b.date||'').localeCompare(a.date||'')).slice(0,6);
+ recent.innerHTML=latest.length?`<div class="tablewrap"><table><thead><tr><th>No. order</th><th>Pelanggan / lokasi</th><th>Status</th><th class="admin-only">Baki</th></tr></thead><tbody>${latest.map(j=>`<tr><td>${esc(j.code)}</td><td><b>${esc(j.customer)}</b><br><span class="small">${esc(j.location)}</span></td><td><span class="pill ${statusClass(j.status)}">${esc(j.status)}</span></td><td class="admin-only">${money(balance(j))}</td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">Belum ada order. Tekan “Daftar Order” untuk mula.</div>';
+}
+function renderJobs(){
+ if(!jobsTable)return;let q=(searchJob.value||'').toLowerCase(),st=filterStatus.value,ps=filterPay.value;
+ let arr=jobs.filter(j=>(!q||[j.code,j.customer,j.location,j.phone].join(' ').toLowerCase().includes(q))&&(!st||j.status===st)&&(!ps||payStatus(j)===ps)).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+ jobsTable.innerHTML=arr.length?`<table><thead><tr><th>Order / tarikh</th><th>Pelanggan & lokasi</th><th>Pekerja</th><th>Status kerja</th><th class="admin-only">Bayaran / baki</th><th>Tindakan</th></tr></thead><tbody>${arr.map(j=>`<tr><td><b>${esc(j.code)}</b><br>${esc(j.date||'')}</td><td><b>${esc(j.customer)}</b><br>${esc(j.location)}<br><span class="small">${esc(j.type)}</span></td><td>${esc(wname(j.worker))}</td><td><span class="pill ${statusClass(j.status)}">${esc(j.status)}</span></td><td class="admin-only">${money(j.paid)} / ${money(j.amount)}<br><span class="pill ${statusClass(payStatus(j))}">${payStatus(j)}</span><br><span class="small">Baki ${money(balance(j))}</span></td><td class="actions-cell"><button onclick="editJob('${j.id}')">Edit</button><button class="secondary" onclick="printJob('${j.id}')">Cetak</button><button class="gold" onclick="waJob('${j.id}')">WA</button><button class="danger admin-only" onclick="deleteJob('${j.id}')">Padam</button></td></tr>`).join('')}</tbody></table>`:'<div class="empty">Tiada rekod yang sepadan.</div>';
+}
+function renderPayments(){
+ let amount=jobs.reduce((s,j)=>s+Number(j.amount||0),0),paid=jobs.reduce((s,j)=>s+Number(j.paid||0),0),due=jobs.reduce((s,j)=>s+balance(j),0);
+ pAmount.textContent=money(amount);pPaid.textContent=money(paid);pDue.textContent=money(due);
+ paymentTable.innerHTML=jobs.length?`<table><thead><tr><th>Order / pelanggan</th><th>Nilai kerja</th><th>Diterima</th><th>Baki</th><th>Status</th><th></th></tr></thead><tbody>${jobs.map(j=>`<tr><td><b>${esc(j.code)}</b><br>${esc(j.customer)}</td><td>${money(j.amount)}</td><td>${money(j.paid)}</td><td><b>${money(balance(j))}</b></td><td><span class="pill ${statusClass(payStatus(j))}">${payStatus(j)}</span></td><td><button onclick="editJob('${j.id}')">Kemaskini</button></td></tr>`).join('')}</tbody></table>`:'<div class="empty">Belum ada rekod bayaran.</div>';
+}
+function renderWorkers(){workerList.innerHTML=workers.map(w=>{let n=jobs.filter(j=>j.worker===w.id&&j.status!=='Kerja siap').length;return `<div class="card"><div class="k">${w.role==='admin'?'Admin':'Pekerja'}</div><b>${esc(w.name)}</b><div class="sub">${n} tugasan belum siap</div></div>`}).join('')}
+function renderReports(){
+ if(!reportSummary)return;let from=dateFrom.value,to=dateTo.value,arr=jobs.filter(j=>(!from||j.date>=from)&&(!to||j.date<=to));
+ let a=arr.reduce((s,j)=>s+Number(j.amount||0),0),p=arr.reduce((s,j)=>s+Number(j.paid||0),0);
+ reportSummary.innerHTML=`<p><b>${arr.length}</b> order dalam tempoh dipilih.</p><div class="grid3"><div><span class="small">Nilai kerja</span><h2>${money(a)}</h2></div><div><span class="small">Bayaran diterima</span><h2>${money(p)}</h2></div><div><span class="small">Baki belum bayar</span><h2>${money(arr.reduce((s,j)=>s+balance(j),0))}</h2></div></div>`;
+}
+function clearDates(){dateFrom.value='';dateTo.value='';renderReports()}
+function openJob(){jobForm.reset();jobId.value='';modalTitle.textContent='Daftar order baru';date.value=new Date().toISOString().slice(0,10);worker.innerHTML=workerOptions();beforeData='';afterData='';signatureData='';jobModal.classList.add('open');clearSignature()}
+function closeJob(){jobModal.classList.remove('open')}
+function nextCode(){let y=new Date().getFullYear(),m=jobs.map(j=>(j.code||'').startsWith('EH-'+y+'-')?parseInt(j.code.slice(8)):0);return 'EH-'+y+'-'+String(Math.max(0,...m)+1).padStart(4,'0')}
+function compress(file,cb){if(!file)return;let r=new FileReader();r.onload=()=>{let im=new Image();im.onload=()=>{let s=Math.min(1,900/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*s;c.height=im.height*s;c.getContext('2d').drawImage(im,0,0,c.width,c.height);cb(c.toDataURL('image/jpeg',.6))};im.src=r.result};r.readAsDataURL(file)}
+$('beforePhoto').onchange=e=>compress(e.target.files[0],d=>beforeData=d);
+$('afterPhoto').onchange=e=>compress(e.target.files[0],d=>afterData=d);
+function waJob(id){let j=jobs.find(x=>x.id===id),p=String(j.phone||'').replace(/\D/g,'');if(!p){alert('No. telefon belum diisi.');return}if(p[0]==='0')p='6'+p;window.open('https://wa.me/'+p+'?text='+encodeURIComponent('Salam '+j.customer+', rujukan '+j.code+' ('+j.type+'). Status: '+j.status+'. Baki bayaran: '+money(balance(j))+'. - Elektrik Hayat Sdn Bhd'),'_blank')}
+async function saveJob(e){
+ e.preventDefault();let id=jobId.value||crypto.randomUUID();let old=jobs.find(j=>j.id===id);
+ let obj={id,code:old?.code||nextCode(),customer:customer.value,phone:phone.value,date:date.value,type:type.value,location:$('location').value,worker:worker.value,status:$('status').value,finishDate:$('finishDate').value||($('status').value==='Kerja siap'?new Date().toISOString().slice(0,10):''),amount:Number(amount.value||0),paid:Number(paid.value||0),description:description.value,materials:materials.value,followup:followup.value,before:beforeData,after:afterData,signature:signatureData};
+ if(obj.paid>obj.amount){alert('Bayaran diterima tidak boleh melebihi jumlah harga kerja.');return}
+ let row={code:obj.code,worker:obj.worker||null,data:obj,updated_at:new Date().toISOString()};
+ let r=old?await sb.from('jobs').update(row).eq('id',id).select():await sb.from('jobs').insert({id,...row}).select();
+ if(r.error||!r.data.length){alert('Gagal simpan: '+(r.error?.message||'tiada kebenaran'));return}
+ if(old)jobs=jobs.map(j=>j.id===id?obj:j);else jobs.push(obj);
+ renderAll();closeJob();
+}
+function editJob(id){let j=jobs.find(x=>x.id===id);if(!j)return;openJob();modalTitle.textContent='Kemaskini '+j.code;jobId.value=j.id;['customer','phone','date','type','location','status','finishDate','amount','paid','description','materials','followup'].forEach(k=>document.getElementById(k).value=j[k]??'');worker.innerHTML=workerOptions(j.worker);beforeData=j.before||'';afterData=j.after||'';signatureData=j.signature||'';drawSignature(signatureData)}
+async function deleteJob(id){if(!confirm('Padam rekod kerja ini? Tindakan ini tidak boleh dibatalkan.'))return;let{error}=await sb.from('jobs').delete().eq('id',id);if(error){alert('Gagal padam: '+error.message);return}jobs=jobs.filter(j=>j.id!==id);renderAll()}
+function exportData(){let blob=new Blob([JSON.stringify({jobs,workers,exported:new Date().toISOString()},null,2)],{type:'application/json'});download(blob,'elektrik-hayat-backup-'+new Date().toISOString().slice(0,10)+'.json')}
+function download(blob,name){let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();URL.revokeObjectURL(a.href)}
+function exportCSV(){let rows=[['No Order','Tarikh','Pelanggan','Telefon','Lokasi','Jenis','Pekerja','Status kerja','Jumlah','Diterima','Baki','Status bayaran'],...jobs.map(j=>[j.code,j.date,j.customer,j.phone,j.location,j.type,wname(j.worker),j.status,j.amount,j.paid,balance(j),payStatus(j)])];let csv=rows.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\n');download(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}),'laporan-elektrik-hayat.csv')}
+function printJob(id){let j=jobs.find(x=>x.id===id);let w=window.open('','_blank');w.document.write(`<html><meta charset="utf-8"><title>${esc(j.code)}</title><body style="font:14px Arial;padding:25px"><h2>ELEKTRIK HAYAT SDN BHD</h2><h3>LAPORAN KERJA ${esc(j.code)}</h3><p><b>Pelanggan:</b> ${esc(j.customer)}<br><b>Telefon:</b> ${esc(j.phone)}<br><b>Tarikh:</b> ${esc(j.date)}<br><b>Lokasi:</b> ${esc(j.location)}<br><b>Jenis kerja:</b> ${esc(j.type)}<br><b>Pekerja:</b> ${esc(wname(j.worker))}<br><b>Status:</b> ${esc(j.status)}</p><hr><p><b>Butiran kerja</b><br>${esc(j.description).replace(/\n/g,'<br>')}</p><p><b>Bahan digunakan</b><br>${esc(j.materials).replace(/\n/g,'<br>')}</p><p><b>Catatan susulan</b><br>${esc(j.followup).replace(/\n/g,'<br>')}</p><hr><p>Jumlah: ${money(j.amount)}<br>Diterima: ${money(j.paid)}<br>Baki: ${money(balance(j))}<br>Status bayaran: ${payStatus(j)}</p>${j.before?'<p>Gambar sebelum:</p><img style="max-width:260px" src="'+j.before+'">':''}${j.after?'<p>Gambar selepas:</p><img style="max-width:260px" src="'+j.after+'">':''}${j.signature?'<p>Tandatangan pelanggan:</p><img style="max-width:260px" src="'+j.signature+'">':''}<p style="margin-top:45px">Disediakan oleh: ____________________ &nbsp; Pengesahan pelanggan: ____________________</p><script>window.onload=()=>window.print()<\/script></body></html>`);w.document.close()}
+function clearSignature(){setupCanvas();signatureData=''}
+function drawSignature(data){if(!data)return;let im=new Image();im.onload=()=>signature.getContext('2d').drawImage(im,0,0,signature.clientWidth,130);im.src=data}
+let signature=document.getElementById('signature'),drawing=false;
+function setupCanvas(){let rect=signature.getBoundingClientRect(),dpr=window.devicePixelRatio||1;signature.width=rect.width*dpr;signature.height=130*dpr;let ctx=signature.getContext('2d');ctx.scale(dpr,dpr);ctx.lineWidth=2;ctx.lineCap='round';ctx.strokeStyle='#17212b';}
+setupCanvas();
+function pos(e){let r=signature.getBoundingClientRect();return {x:e.clientX-r.left,y:e.clientY-r.top}}
+signature.addEventListener('pointerdown',e=>{drawing=true;signature.setPointerCapture(e.pointerId);let p=pos(e),c=signature.getContext('2d');c.beginPath();c.moveTo(p.x,p.y)});
+signature.addEventListener('pointermove',e=>{if(!drawing)return;let p=pos(e),c=signature.getContext('2d');c.lineTo(p.x,p.y);c.stroke()});
+signature.addEventListener('pointerup',()=>{drawing=false;signatureData=signature.toDataURL('image/png')});
+renderAll();
+let ch=null;
+async function boot(){let{data:{session}}=await sb.auth.getSession();if(session)await loadAll(session.user.id);else login.classList.add('open')}
+async function doLogin(){loginErr.textContent='';let{error}=await sb.auth.signInWithPassword({email:email.value.trim(),password:pass.value});if(error){loginErr.textContent='Emel atau kata laluan salah.';return}pass.value='';boot()}
+async function logout(){if(ch){sb.removeChannel(ch);ch=null}await sb.auth.signOut();jobs=[];workers=[];me=null;document.body.classList.remove('worker');renderAll();who.textContent='';login.classList.add('open')}
+async function loadAll(uid){let p=await sb.from('profiles').select('*'),j=await sb.from('jobs').select('data').order('created_at');
+ if(p.error||j.error){alert('Gagal muat data: '+(p.error||j.error).message);return}
+ workers=p.data;me=workers.find(w=>w.id===uid);if(!me){alert('Profil pengguna tiada. Hubungi admin.');return}
+ jobs=j.data.map(r=>r.data);login.classList.remove('open');let a=me.role==='admin';document.body.classList.toggle('worker',!a);
+ who.innerHTML='Log masuk: <b>'+esc(me.name)+'</b> ('+(a?'Admin':'Pekerja')+')';
+ ['dDue','amount','paid','worker'].forEach(i=>$(i).closest('.card,.field').classList.add('admin-only'));
+ showTab('dashboard');
+ if(!ch)ch=sb.channel('jobs').on('postgres_changes',{event:'*',schema:'public',table:'jobs'},async()=>{let r=await sb.from('jobs').select('data').order('created_at');if(!r.error){jobs=r.data.map(x=>x.data);renderAll()}}).subscribe()}
+boot();
+</script>
+</body>
+</html>
