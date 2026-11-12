@@ -1,2 +1,2 @@
-const SUPABASE_URL='https://URL-ANDA.supabase.co';
-const SUPABASE_KEY='sb_publishable_KEY-ANDA';
+const SUPABASE_URL='https://sidowigibiisewjetpjg.supabase.co/rest/v1/';
+const SUPABASE_KEY='https://sidowigibiisewjetpjg.supabase.co/rest/v1/';
